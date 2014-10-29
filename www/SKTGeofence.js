@@ -1,5 +1,5 @@
 module.exports = {
-	echo : function(success, failure) {
-		cordova.exec(success, failure, 'SKTGeofence', 'echo', []);
+	echo : function(msg, success, failure) {
+		cordova.exec(success, failure, 'SKTGeofence', 'echo', [msg]);
 	}
 };

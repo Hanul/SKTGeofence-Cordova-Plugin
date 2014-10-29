@@ -4,21 +4,11 @@ xmlns="http://www.phonegap.com/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
 id="com.btncafe.cordova.sktgeofence"
 version="0.0.1">
-	<name>
-		SKTGeofence Cordova Plugin
-	</name>
-	<author>
-		Hanul
-	</author>
-	<license>
-		MIT
-	</license>
-	<repo>
-		https://github.com/Hanul/SKTGeofence-Cordova-Plugin.git
-	</repo>
-	<issue>
-		https://github.com/Hanul/SKTGeofence-Cordova-Plugin/issues
-	</issue>
+	<name>SKTGeofence Cordova Plugin</name>
+	<author>Hanul</author>
+	<license>MIT</license>
+	<repo>https://github.com/Hanul/SKTGeofence-Cordova-Plugin.git</repo>
+	<issue>https://github.com/Hanul/SKTGeofence-Cordova-Plugin/issues</issue>
 	<js-module src="www/SKTGeofence.js" name="SKTGeofence">
 		<clobbers target="SKTGeofence" />
 	</js-module>

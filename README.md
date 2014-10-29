@@ -1,2 +1,2 @@
-SKTGeofence-Cordova-Plugin
+SKTGeofence Cordova Plugin
 ==========================

@@ -38,8 +38,8 @@ version="0.0.1">
 				</intent-filter>
 			</receiver>
 		</config-file>
-		<source-file src="src/libs/android-support-v4.jar" target-dir="libs" />
-		<source-file src="src/libs/GeoFenceApi.jar" target-dir="libs" />
+		<source-file src="libs/android-support-v4.jar" target-dir="libs" />
+		<source-file src="libs/GeoFenceApi.jar" target-dir="libs" />
 		<source-file src="src/com/btncafe/cordova/sktgeofence/SKTGeofence.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
 		<source-file src="src/com/btncafe/cordova/sktgeofence/SKTGeofenceCordovaPlugin.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
 	</platform>

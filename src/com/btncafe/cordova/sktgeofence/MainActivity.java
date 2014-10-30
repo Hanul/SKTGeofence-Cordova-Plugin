@@ -22,67 +22,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.skt.geofence.AppData;
-import com.skt.geofence.GeoFenceSyncState;
-import com.skt.geofence.agent.service.AgentManager;
-import com.skt.geofence.agent.service.AgentManager.GeoFenceAgentException;
-import com.skt.geofence.agent.service.GeoFenceAgentListener;
-
 public class MainActivity extends Activity {
 
-	private String tdcProjectKey;
-
-	private GeoFenceAgentListener agentListener = new GeoFenceAgentListener() {
-
-		@Override
-		public void onError(int arg0, String arg1) {
-			Log.i("test", "onError: " + arg0 + " " + arg1);
-		}
-
-		@Override
-		public void onResponseReceived(int resultCode, String data) {
-			Log.i("test", "onResponseReceived: " + resultCode + " " + data);
-		}
-
-		@Override
-		public void onHttpStatusChanged(int httpState) {
-			Log.i("test", "onHttpStatusChanged: " + httpState);
-		}
-
-		@Override
-		public void onSynchronizeStatusChanged(GeoFenceSyncState arg0, boolean arg1) {
-			Log.i("test", "onSynchronizeStatusChanged: " + arg0 + " " + arg1);
-		}
-
-		@Override
-		public void onServiceConnected() {
-			Log.i("test", "onServiceConnected");
-
-			AppData appdata = new AppData();
-			appdata.appName = "API Test for BTNCafe";
-			appdata.packageName = "com.btncafe.cordova.sktgeofence";
-			appdata.tdcProjectKey = tdcProjectKey;
-			mAgentManager.setAppData(appdata);
-		}
-	};
-
-	AgentManager mAgentManager = null;
+	private SKTGeofence sktgeofence;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		if (mAgentManager == null) {
-			mAgentManager = AgentManager.getInstance();
-		}
-		if (mAgentManager != null) {
-			try {
-				mAgentManager.initialize(this, agentListener);
-			} catch (GeoFenceAgentException e) {
-				e.printStackTrace();
-			}
-		}
 
 		Properties prop = new Properties();
 		InputStream input = null;
@@ -96,8 +43,93 @@ public class MainActivity extends Activity {
 			// load a properties file
 			prop.load(input);
 
-			// get the property value and print it out
-			tdcProjectKey = prop.getProperty("tdcProjectKey");
+			sktgeofence = new SKTGeofence(this, prop.getProperty("tdcProjectKey"), new ConnectedListener() {
+
+				@Override
+				public void onConnected() {
+
+					sktgeofence.getStoreGroupList(new ListHandler() {
+
+						@Override
+						public void handle(List<JSONObject> dataSet) {
+							Log.i("test1", dataSet.toString());
+
+							sktgeofence.getStoreList(315, new ListHandler() {
+
+								@Override
+								public void handle(List<JSONObject> dataSet) {
+									Log.i("test2", dataSet.toString());
+								}
+							});
+						}
+					});
+
+					// 사용할 버튼을 선언해준다.
+					Button button;
+
+					// Java의 button 객체를 main.xml의 버튼(id가 main_button)과 연결해준다.
+					button = (Button) findViewById(R.id.main_button);
+
+					// 버튼의 클릭이벤트를 처리하기 위해 클릭리스너를 버튼에 등록해준다.
+					button.setOnClickListener(new OnClickListener() {
+						// 파라미터로 넘어오는 View는 현재 클릭된 View이다. 현재 클릭된 View는
+						// button이다.
+						public void onClick(View v) {
+
+							JSONObject data1 = new JSONObject();
+
+							try {
+								data1.put("storeGroupName", "TEST");
+								data1.put("groupName", "할인사냥테스트1");
+								data1.put("groupDesc", "할인사냥테스트1");
+								data1.put("groupIcon", 1);
+								data1.put("updateUser", 0);
+								data1.put("isUse", "Y");
+
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+							/*
+							 * sktgeofence.addStoreGroup(data1, new Handler() {
+							 * 
+							 * @Override public void handle(JSONObject data) {
+							 * Log.i("test", data.toString()); } });
+							 */
+
+							JSONObject data = new JSONObject();
+
+							try {
+								data.put("storeGroupId", 315);
+								data.put("name", "매장10");
+								data.put("address", "서울특별시");
+								data.put("floor", 1);
+								data.put("latitude", 37.4999072);
+								data.put("longitude", 127.0373932);
+								data.put("telNo", "test");
+								data.put("homepage", "test");
+								data.put("isUse", "Y");
+
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+
+							/*
+							 * sktgeofence.addStore(data, new Handler() {
+							 * 
+							 * @Override public void handle(JSONObject data) {
+							 * Log.i("test", data.toString()); } });
+							 */
+
+							// mAgentManager.setWStore(data.toString());
+
+							// mAgentManager.getWFenceAll("API_Test_for_BTNCafe");
+						}
+					});
+				}
+			});
 
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -110,79 +142,6 @@ public class MainActivity extends Activity {
 				}
 			}
 		}
-
-		final AppData appdata = new AppData();
-		appdata.appName = "API Test for BTNCafe";
-		appdata.packageName = "com.btncafe.cordova.sktgeofence";
-		appdata.tdcProjectKey = tdcProjectKey;
-
-		// 사용할 버튼을 선언해준다.
-		Button button;
-
-		// Java의 button 객체를 main.xml의 버튼(id가 main_button)과 연결해준다.
-		button = (Button) findViewById(R.id.main_button);
-
-		// 버튼의 클릭이벤트를 처리하기 위해 클릭리스너를 버튼에 등록해준다.
-		button.setOnClickListener(new OnClickListener() {
-			// 파라미터로 넘어오는 View는 현재 클릭된 View이다. 현재 클릭된 View는 button이다.
-			public void onClick(View v) {
-
-				if (mAgentManager != null) {
-					mAgentManager.syncWDB(appdata);
-				}
-
-				JSONObject data1 = new JSONObject();
-
-				try {
-					data1.put("storeGroupName", "TEST");
-					data1.put("groupName", "할인사냥테스트1");
-					data1.put("groupDesc", "할인사냥테스트1");
-					data1.put("groupIcon", 1);
-					data1.put("updateUser", 0);
-					data1.put("isUse", "Y");
-
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				if (mAgentManager != null) {
-					// mAgentManager.setWStoreGroup(data1.toString());
-				}
-
-				if (mAgentManager != null) {
-					mAgentManager.getWStoreGroupAll();
-					mAgentManager.getWStoreAll("178");
-				}
-
-				JSONObject data = new JSONObject();
-
-				try {
-					data.put("storeGroupId", 178);
-					data.put("name", "매장10");
-					data.put("address", "서울특별시");
-					data.put("floor", 1);
-					data.put("latitude", 37.4999072);
-					data.put("longitude", 127.0373932);
-					data.put("telNo", "test");
-					data.put("homepage", "test");
-					data.put("isUse", "Y");
-
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				if (mAgentManager != null) {
-					// mAgentManager.setWStore(data.toString());
-				}
-
-				if (mAgentManager != null) {
-					// mAgentManager.getWFenceAll("API_Test_for_BTNCafe");
-				}
-			}
-		});
-
 	}
 
 	@Override
@@ -235,13 +194,6 @@ public class MainActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 
-		if (mAgentManager != null) {
-			try {
-				mAgentManager.release();
-			} catch (GeoFenceAgentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		sktgeofence.release();
 	}
 }

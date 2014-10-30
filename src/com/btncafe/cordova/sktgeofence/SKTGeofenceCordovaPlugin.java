@@ -12,7 +12,7 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		if (action.equals("echo")) {
-			String message = args.getString(0);
+			String message = args.getString(0); // null도 "null"로 오는구만?
 			this.echo(message, callbackContext);
 			return true;
 		}

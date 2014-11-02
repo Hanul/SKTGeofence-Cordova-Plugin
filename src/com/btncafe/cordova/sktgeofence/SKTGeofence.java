@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import UPPERCASE.JAVA.JSON.UTIL;
 import android.content.Context;
 
 import com.skt.geofence.AppData;
@@ -38,7 +39,7 @@ public class SKTGeofence {
 				JSONObject result = new JSONObject(json);
 				String dataType = result.getString("data_type");
 
-				if (dataType.equals("StoreGroupList") || dataType.equals("StoreList")) {
+				if (dataType.equals("StoreGroupList") || dataType.equals("StoreList") || dataType.equals("EventList") || dataType.equals("FenceList")) {
 
 					List<JSONObject> dataSet = new ArrayList<JSONObject>();
 
@@ -50,8 +51,10 @@ public class SKTGeofence {
 
 					listHandlers.remove(0).handle(dataSet);
 
-				} else {
+				} else if (!result.isNull("data")) {
 					handlers.remove(0).handle(result.getJSONObject("data"));
+				} else {
+					handlers.remove(0).handle();
 				}
 
 			} catch (JSONException e) {
@@ -71,13 +74,24 @@ public class SKTGeofence {
 
 		@Override
 		public void onServiceConnected() {
+
+			// GeoFenceAgent에 App의 정보를 설정
 			agentManager.setAppData(appData);
+
+			// Web-Poc와 단말간의 데이터 동기화
 			agentManager.syncWDB(appData);
 
 			connectedListener.onConnected();
 		}
 	};
 
+	/**
+	 * SKT GeoFenceAgent와 연결합니다.
+	 * 
+	 * @param context
+	 * @param tdcProjectKey
+	 * @param connectedListener
+	 */
 	public SKTGeofence(Context context, String tdcProjectKey, ConnectedListener connectedListener) {
 
 		appData = new AppData();
@@ -94,26 +108,321 @@ public class SKTGeofence {
 		}
 	}
 
-	public void addStoreGroup(JSONObject data, Handler handler) {
+	private Handler emptyHandler = new Handler() {
+		// ignore.
+	};
+
+	/**
+	 * Store Group을 생성합니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void createStoreGroup(JSONObject data, Handler handler) {
+
+		JSONObject copy = UTIL.COPY_DATA(data);
+
+		try {
+			copy.put("groupIcon", 0);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
 		handlers.add(handler);
-		agentManager.setWStoreGroup(data.toString());
+		agentManager.setWStoreGroup(copy.toString());
 	}
 
+	/**
+	 * Store Group을 생성합니다.
+	 * 
+	 * @param data
+	 */
+	public void createStoreGroup(JSONObject data) {
+		createStoreGroup(data, emptyHandler);
+	}
+
+	/**
+	 * storeGroupId에 해당하는 Store Group 정보를 가져옵니다.
+	 * 
+	 * @param storeGroupId
+	 * @param handler
+	 */
+	public void getStoreGroup(int storeGroupId, Handler handler) {
+		handlers.add(handler);
+		agentManager.getWStoreGroup(String.valueOf(storeGroupId));
+	}
+
+	/**
+	 * storeGroupId에 해당하는 Store Group 정보를 수정합니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void updateStoreGroup(final JSONObject data, final Handler handler) {
+
+		try {
+			getStoreGroup(data.getInt("storeGroupId"), new Handler() {
+
+				@Override
+				public void handle(JSONObject originData) {
+
+					UTIL.EXTEND_DATA(originData, data);
+
+					handlers.add(handler);
+					agentManager.updateWStoreGroup(originData.toString());
+				}
+			});
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * storeGroupId에 해당하는 Store Group 정보를 수정합니다.
+	 * 
+	 * @param data
+	 */
+	public void updateStoreGroup(JSONObject data) {
+		updateStoreGroup(data, emptyHandler);
+	}
+
+	/**
+	 * storeGroupId에 해당하는 Store Group 정보를 삭제합니다.
+	 * 
+	 * @param storeGroupId
+	 * @param handler
+	 */
+	public void removeStoreGroup(int storeGroupId, Handler handler) {
+		handlers.add(handler);
+		agentManager.deleteWStoreGroup(String.valueOf(storeGroupId));
+	}
+
+	/**
+	 * storeGroupId에 해당하는 Store Group 정보를 삭제합니다.
+	 * 
+	 * @param storeGroupId
+	 */
+	public void removeStoreGroup(int storeGroupId) {
+		removeStoreGroup(storeGroupId, emptyHandler);
+	}
+
+	/**
+	 * 모든 Store Group 정보를 불러옵니다.
+	 * 
+	 * @param listHandler
+	 */
 	public void getStoreGroupList(ListHandler listHandler) {
 		listHandlers.add(listHandler);
 		agentManager.getWStoreGroupAll();
 	}
 
-	public void addStore(JSONObject data, Handler handler) {
+	/**
+	 * Store를 생성합니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void createStore(JSONObject data, Handler handler) {
+
+		JSONObject copy = UTIL.COPY_DATA(data);
+
+		try {
+			copy.put("floor", 1);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
 		handlers.add(handler);
-		agentManager.setWStore(data.toString());
+		agentManager.setWStore(copy.toString());
 	}
 
-	public void getStoreList(int storeId, ListHandler listHandler) {
+	/**
+	 * Store를 생성합니다.
+	 * 
+	 * @param data
+	 */
+	public void createStore(JSONObject data) {
+		createStore(data, emptyHandler);
+	}
+
+	/**
+	 * storeId에 해당하는 Store 정보를 가져옵니다.
+	 * 
+	 * @param storeId
+	 * @param handler
+	 */
+	public void getStore(int storeId, Handler handler) {
+		handlers.add(handler);
+		agentManager.getWStore(String.valueOf(storeId));
+	}
+
+	/**
+	 * storeId에 해당하는 Store 정보를 수정합니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void updateStore(final JSONObject data, final Handler handler) {
+
+		try {
+			getStore(data.getInt("storeId"), new Handler() {
+
+				@Override
+				public void handle(JSONObject originData) {
+
+					UTIL.EXTEND_DATA(originData, data);
+
+					handlers.add(handler);
+					agentManager.updateWStore(originData.toString());
+				}
+			});
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * storeId에 해당하는 Store 정보를 수정합니다.
+	 * 
+	 * @param data
+	 */
+	public void updateStore(JSONObject data) {
+		updateStore(data, emptyHandler);
+	}
+
+	/**
+	 * storeId에 해당하는 Store 정보를 삭제합니다.
+	 * 
+	 * @param storeId
+	 * @param handler
+	 */
+	public void removeStore(int storeId, Handler handler) {
+		handlers.add(handler);
+		agentManager.deleteWStore(String.valueOf(storeId));
+	}
+
+	/**
+	 * storeId에 해당하는 Store 정보를 삭제합니다.
+	 * 
+	 * @param storeId
+	 */
+	public void removeStore(int storeId) {
+		removeStore(storeId, emptyHandler);
+	}
+
+	/**
+	 * storeGroupId에 해당하는 Store Group의 모든 Store 정보를 불러옵니다.
+	 * 
+	 * @param storeGroupId
+	 * @param listHandler
+	 */
+	public void getStoreList(int storeGroupId, ListHandler listHandler) {
 		listHandlers.add(listHandler);
-		agentManager.getWStoreAll(String.valueOf(storeId));
+		agentManager.getWStoreAll(String.valueOf(storeGroupId));
 	}
 
+	/**
+	 * Fence를 생성합니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void createFence(JSONObject data, Handler handler) {
+		handlers.add(handler);
+		agentManager.setWFence(data.toString());
+	}
+
+	/**
+	 * Fence를 생성합니다.
+	 * 
+	 * @param data
+	 */
+	public void createFence(JSONObject data) {
+		createFence(data, emptyHandler);
+	}
+
+	/**
+	 * fenceId에 해당하는 Fence 정보를 가져옵니다.
+	 * 
+	 * @param fenceId
+	 * @param handler
+	 */
+	public void getFence(int fenceId, Handler handler) {
+		handlers.add(handler);
+		agentManager.getWFence(String.valueOf(fenceId));
+	}
+
+	/**
+	 * fenceId에 해당하는 Fence 정보를 수정합니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void updateFence(final JSONObject data, final Handler handler) {
+
+		try {
+			getStore(data.getInt("fenceId"), new Handler() {
+
+				@Override
+				public void handle(JSONObject originData) {
+
+					UTIL.EXTEND_DATA(originData, data);
+
+					handlers.add(handler);
+					agentManager.updateWFence(originData.toString());
+				}
+			});
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * fenceId에 해당하는 Fence 정보를 수정합니다.
+	 * 
+	 * @param data
+	 */
+	public void updateFence(JSONObject data) {
+		updateFence(data, emptyHandler);
+	}
+
+	/**
+	 * fenceId에 해당하는 Fence 정보를 삭제합니다.
+	 * 
+	 * @param fenceId
+	 * @param handler
+	 */
+	public void removeFence(int fenceId, Handler handler) {
+		handlers.add(handler);
+		agentManager.deleteWFence(String.valueOf(fenceId));
+	}
+
+	/**
+	 * fenceId에 해당하는 Fence 정보를 삭제합니다.
+	 * 
+	 * @param fenceId
+	 */
+	public void removeFence(int fenceId) {
+		removeFence(fenceId, emptyHandler);
+	}
+
+	/**
+	 * storeId에 해당하는 Store의 모든 Fence 정보를 불러옵니다.
+	 * 
+	 * @param storeId
+	 * @param listHandler
+	 */
+	public void getFenceList(int storeId, ListHandler listHandler) {
+		listHandlers.add(listHandler);
+		agentManager.getWFenceAll(String.valueOf(storeId));
+	}
+
+	/**
+	 * OnDestroy등에서 GeoFenceAgent와 연결을 해제합니다.
+	 */
 	public void release() {
 		try {
 			agentManager.release();

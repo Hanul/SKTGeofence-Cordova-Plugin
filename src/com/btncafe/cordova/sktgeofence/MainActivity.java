@@ -52,13 +52,31 @@ public class MainActivity extends Activity {
 
 						@Override
 						public void handle(List<JSONObject> dataSet) {
-							Log.i("test1", dataSet.toString());
+							//Log.i("test1", dataSet.toString());
 
-							sktgeofence.getStoreList(315, new ListHandler() {
+							for (JSONObject data : dataSet) {
+								/*
+								 * sktgeofence.removeStoreGroup(data.getInt(
+								 * "storeGroupId"), new Handler() {
+								 * 
+								 * @Override public void handle() {
+								 * Log.i("test", "deleted!"); } });
+								 */
+							}
+
+							sktgeofence.getStoreList(328, new ListHandler() {
 
 								@Override
 								public void handle(List<JSONObject> dataSet) {
-									Log.i("test2", dataSet.toString());
+									//Log.i("test2", dataSet.toString());
+									
+									sktgeofence.getStore(332, new Handler() {
+
+										@Override
+										public void handle(JSONObject dataSet) {
+											//Log.i("test3", dataSet.toString());
+										}
+									});
 								}
 							});
 						}
@@ -79,12 +97,7 @@ public class MainActivity extends Activity {
 							JSONObject data1 = new JSONObject();
 
 							try {
-								data1.put("storeGroupName", "TEST");
 								data1.put("groupName", "할인사냥테스트1");
-								data1.put("groupDesc", "할인사냥테스트1");
-								data1.put("groupIcon", 1);
-								data1.put("updateUser", 0);
-								data1.put("isUse", "Y");
 
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
@@ -92,7 +105,8 @@ public class MainActivity extends Activity {
 							}
 
 							/*
-							 * sktgeofence.addStoreGroup(data1, new Handler() {
+							 * sktgeofence.createStoreGroup(data1, new Handler()
+							 * {
 							 * 
 							 * @Override public void handle(JSONObject data) {
 							 * Log.i("test", data.toString()); } });
@@ -101,27 +115,40 @@ public class MainActivity extends Activity {
 							JSONObject data = new JSONObject();
 
 							try {
-								data.put("storeGroupId", 315);
-								data.put("name", "매장10");
-								data.put("address", "서울특별시");
-								data.put("floor", 1);
-								data.put("latitude", 37.4999072);
-								data.put("longitude", 127.0373932);
-								data.put("telNo", "test");
-								data.put("homepage", "test");
-								data.put("isUse", "Y");
+								data.put("storeGroupId", 328);
+								data.put("name", "홈");
+								data.put("address", "서울특별시 성북구 보문동6가 아남아파트");
 
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 
-							/*
-							 * sktgeofence.addStore(data, new Handler() {
-							 * 
-							 * @Override public void handle(JSONObject data) {
-							 * Log.i("test", data.toString()); } });
-							 */
+							sktgeofence.createStore(data, new Handler() {
+
+								@Override
+								public void handle(JSONObject data) {
+								
+									JSONObject ndata = new JSONObject();
+
+									try {
+										ndata.put("storeId", data.getInt("storeId"));
+										ndata.put("name", "집");
+
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									
+									sktgeofence.updateStore(ndata, new Handler() {
+
+										@Override
+										public void handle(JSONObject data) {
+											Log.i("testup", data.toString());
+										}
+									});
+								}
+							});
 
 							// mAgentManager.setWStore(data.toString());
 

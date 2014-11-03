@@ -5,20 +5,28 @@ module.exports = {
 		//REQUIRED: params.packageName
 		//REQUIRED: params.tdcProjectKey
 
-		cordova.exec(undefined, undefined, 'SKTGeofenceCordovaPlugin', 'init', [params]);
+		cordova.exec(function() {
+			// ignore.
+		}, function() {
+			// ignore.
+		}, 'SKTGeofenceCordovaPlugin', 'init', [params]);
 	},
 
 	createStoreGroup : function(storeGroupData, callback) {
 		//REQUIRED: storeGroupData
 		//OPTIONAL: callback
 
-		cordova.exec(callback, undefined, 'SKTGeofenceCordovaPlugin', 'createStoreGroup', [storeGroupData]);
+		cordova.exec(callback, function() {
+			// ignore.
+		}, 'SKTGeofenceCordovaPlugin', 'createStoreGroup', [storeGroupData]);
 	},
 
 	createStore : function(storeData, callback) {
 		//REQUIRED: storeData
 		//OPTIONAL: callback
 
-		cordova.exec(callback, undefined, 'SKTGeofenceCordovaPlugin', 'createStore', [storeData]);
+		cordova.exec(callback, function() {
+			// ignore.
+		}, 'SKTGeofenceCordovaPlugin', 'createStore', [storeData]);
 	}
 };

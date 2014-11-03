@@ -2,9 +2,9 @@
 SKT Geofence API를 Cordova에서 사용 가능하게 하는 플러그인 입니다.
 * [UPPERCASE.JAVA-JSON-UTIL.jar](https://github.com/Hanul/UPPERCASE.JAVA-JSON-UTIL)가 필요합니다.
 
-## 사용 방법
-```Java
-
+## 설치
+```
+cordova plugin add https://github.com/Hanul/SKTGeofence-Cordova-Plugin.git
 ```
 
 ## API

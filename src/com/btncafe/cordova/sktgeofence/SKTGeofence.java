@@ -59,7 +59,7 @@ public class SKTGeofence {
 				} else if (!result.isNull("data")) {
 					handlers.remove(0).handle(result.getJSONObject("data"));
 				} else {
-					handlers.remove(0).handle();
+					handlers.remove(0).handle(null);
 				}
 
 			} catch (JSONException e) {
@@ -126,7 +126,11 @@ public class SKTGeofence {
 	}
 
 	private Handler emptyHandler = new Handler() {
-		// ignore.
+
+		@Override
+		public void handle(JSONObject data) {
+			// ignore.
+		}
 	};
 
 	/**

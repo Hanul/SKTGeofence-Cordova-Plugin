@@ -15,12 +15,29 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 
 		if (action.equals("init")) {
 			JSONObject params = args.getJSONObject(0);
-			sktgeofence = new SKTGeofence(this.cordova.getActivity(), params.getString("packageName"), params.getString("tdcProjectKey"));
+			sktgeofence = new SKTGeofence(this.cordova.getActivity(), params.getString("packageName"), params.getString("tdcProjectKey"), new ConnectedListener() {
+
+				@Override
+				public void onConnected() {
+					callbackContext.success();
+				}
+			});
 		}
 
 		else if (action.equals("createStoreGroup")) {
 
 			sktgeofence.createStoreGroup(args.getJSONObject(0), new Handler() {
+
+				@Override
+				public void handle(JSONObject data) {
+					callbackContext.success(data);
+				}
+			});
+		}
+
+		else if (action.equals("removeStoreGroup")) {
+
+			sktgeofence.removeStoreGroup(args.getInt(0), new Handler() {
 
 				@Override
 				public void handle(JSONObject data) {
@@ -39,7 +56,20 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 				}
 			});
 
-		} else {
+		}
+
+		else if (action.equals("removeStore")) {
+
+			sktgeofence.removeStore(args.getInt(0), new Handler() {
+
+				@Override
+				public void handle(JSONObject data) {
+					callbackContext.success(data);
+				}
+			});
+		}
+
+		else {
 			// Returning false results in a "MethodNotFound" error.
 			return false;
 		}

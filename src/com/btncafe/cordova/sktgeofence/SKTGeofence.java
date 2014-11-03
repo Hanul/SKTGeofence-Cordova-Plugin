@@ -99,10 +99,10 @@ public class SKTGeofence {
 	 * @param tdcProjectKey
 	 * @param connectedListener
 	 */
-	public SKTGeofence(Context context, String tdcProjectKey, ConnectedListener connectedListener) {
+	public SKTGeofence(Context context, String packageName, String tdcProjectKey, ConnectedListener connectedListener) {
 
 		appData = new AppData();
-		appData.packageName = "com.btncafe.cordova.sktgeofence";
+		appData.packageName = packageName;
 		appData.tdcProjectKey = tdcProjectKey;
 
 		this.connectedListener = connectedListener;
@@ -121,8 +121,8 @@ public class SKTGeofence {
 	 * @param activity
 	 * @param tdcProjectKey
 	 */
-	public SKTGeofence(Context context, String tdcProjectKey) {
-		this(context, tdcProjectKey, null);
+	public SKTGeofence(Context context, String packageName, String tdcProjectKey) {
+		this(context, packageName, tdcProjectKey, null);
 	}
 
 	private Handler emptyHandler = new Handler() {

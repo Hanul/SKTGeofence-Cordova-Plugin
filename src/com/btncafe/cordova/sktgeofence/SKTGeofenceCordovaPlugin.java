@@ -14,8 +14,8 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 	public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
 
 		if (action.equals("init")) {
-			String tdcProjectKey = args.getString(0);
-			sktgeofence = new SKTGeofence(this.cordova.getActivity(), tdcProjectKey);
+			JSONObject params = args.getJSONObject(0);
+			sktgeofence = new SKTGeofence(this.cordova.getActivity(), params.getString("packageName"), params.getString("tdcProjectKey"));
 		}
 
 		else if (action.equals("createStoreGroup")) {

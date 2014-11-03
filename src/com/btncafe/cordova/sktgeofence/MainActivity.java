@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 			// load a properties file
 			prop.load(input);
 
-			sktgeofence = new SKTGeofence(this, prop.getProperty("tdcProjectKey"), new ConnectedListener() {
+			sktgeofence = new SKTGeofence(this, "com.btncafe.cordova.sktgeofence", prop.getProperty("tdcProjectKey"), new ConnectedListener() {
 
 				@Override
 				public void onConnected() {
@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
 
 						@Override
 						public void handle(List<JSONObject> dataSet) {
-							// Log.i("test1", dataSet.toString());
+							Log.i("test1", dataSet.toString());
 
 							for (JSONObject data : dataSet) {
 								/*
@@ -68,13 +68,14 @@ public class MainActivity extends Activity {
 
 								@Override
 								public void handle(List<JSONObject> dataSet) {
-									Log.i("test2", dataSet.toString());
+									// Log.i("test2", dataSet.toString());
 
 									sktgeofence.getStore(332, new Handler() {
 
 										@Override
 										public void handle(JSONObject dataSet) {
-											//Log.i("test3", dataSet.toString());
+											// Log.i("test3",
+											// dataSet.toString());
 										}
 									});
 								}
@@ -104,13 +105,13 @@ public class MainActivity extends Activity {
 								e.printStackTrace();
 							}
 
-							/*
-							 * sktgeofence.createStoreGroup(data1, new Handler()
-							 * {
-							 * 
-							 * @Override public void handle(JSONObject data) {
-							 * Log.i("test", data.toString()); } });
-							 */
+							sktgeofence.createStoreGroup(data1, new Handler() {
+
+								@Override
+								public void handle(JSONObject data) {
+									Log.i("test", data.toString());
+								}
+							});
 
 							JSONObject data = new JSONObject();
 
@@ -125,31 +126,34 @@ public class MainActivity extends Activity {
 								e.printStackTrace();
 							}
 
-							sktgeofence.createStore(data, new Handler() {
+							if (false) {
 
-								@Override
-								public void handle(JSONObject data) {
+								sktgeofence.createStore(data, new Handler() {
 
-									JSONObject ndata = new JSONObject();
+									@Override
+									public void handle(JSONObject data) {
 
-									try {
-										ndata.put("storeId", data.getInt("storeId"));
-										ndata.put("name", "집4");
+										JSONObject ndata = new JSONObject();
 
-									} catch (JSONException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
+										try {
+											ndata.put("storeId", data.getInt("storeId"));
+											ndata.put("name", "집4");
 
-									sktgeofence.updateStore(ndata, new Handler() {
-
-										@Override
-										public void handle(JSONObject data) {
-											Log.i("testup", data.toString());
+										} catch (JSONException e) {
+											// TODO Auto-generated catch block
+											e.printStackTrace();
 										}
-									});
-								}
-							});
+
+										sktgeofence.updateStore(ndata, new Handler() {
+
+											@Override
+											public void handle(JSONObject data) {
+												Log.i("testup", data.toString());
+											}
+										});
+									}
+								});
+							}
 
 							// mAgentManager.setWStore(data.toString());
 

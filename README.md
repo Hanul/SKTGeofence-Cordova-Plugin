@@ -8,7 +8,7 @@ SKT Geofence API를 Cordova에서 사용 가능하게 하는 플러그인 입니
 ```
 
 ## API
-해당 플러그인은 Store Group, Store, Fence 세 가지 데이터 처리를 제공합니다.
+해당 플러그인은 Store Group, Store 두 가지 데이터 처리를 제공합니다.
 #### Store Group
 ###### Data
 | Name      | Type   | Description |
@@ -16,8 +16,13 @@ SKT Geofence API를 Cordova에서 사용 가능하게 하는 플러그인 입니
 | groupName | String | 매장 그룹명   |
 
 #### Store
-
-#### Fence
+###### Data
+| Name         | Type    | Description  |
+|--------------|---------|--------------|
+| storeGroupId | Integer | 매장 그룹 ID  |
+| name         | String  | 매장명        |
+| latitude     | Double  | 매장 위치 위도 |
+| longitude    | Double  | 매장 위치 경도 |
 
 ## License
 [MIT](LICENSE)

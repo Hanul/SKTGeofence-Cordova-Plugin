@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
 
 						@Override
 						public void handle(List<JSONObject> dataSet) {
-							//Log.i("test1", dataSet.toString());
+							// Log.i("test1", dataSet.toString());
 
 							for (JSONObject data : dataSet) {
 								/*
@@ -68,8 +68,8 @@ public class MainActivity extends Activity {
 
 								@Override
 								public void handle(List<JSONObject> dataSet) {
-									//Log.i("test2", dataSet.toString());
-									
+									Log.i("test2", dataSet.toString());
+
 									sktgeofence.getStore(332, new Handler() {
 
 										@Override
@@ -116,8 +116,9 @@ public class MainActivity extends Activity {
 
 							try {
 								data.put("storeGroupId", 328);
-								data.put("name", "홈");
-								data.put("address", "서울특별시 성북구 보문동6가 아남아파트");
+								data.put("name", "홈4");
+								data.put("latitude", 37.56131351196535);
+								data.put("longitude", 126.996517880426);
 
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
@@ -128,18 +129,18 @@ public class MainActivity extends Activity {
 
 								@Override
 								public void handle(JSONObject data) {
-								
+
 									JSONObject ndata = new JSONObject();
 
 									try {
 										ndata.put("storeId", data.getInt("storeId"));
-										ndata.put("name", "집");
+										ndata.put("name", "집4");
 
 									} catch (JSONException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
-									
+
 									sktgeofence.updateStore(ndata, new Handler() {
 
 										@Override

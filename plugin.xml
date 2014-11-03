@@ -18,6 +18,9 @@ version="0.0.1">
 				<param name="android-package" value="com.btncafe.cordova.sktgeofence.SKTGeofenceCordovaPlugin" />
 			</feature>
 		</config-file>
+		<config-file target="AndroidManifest.xml" parent="/manifest">
+			<uses-permission android:name="android.permission.INTERNET" />
+		</config-file>
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<receiver
 			android:name="com.btncafe.cordova.sktgeofence.GeoServiceReceiver"

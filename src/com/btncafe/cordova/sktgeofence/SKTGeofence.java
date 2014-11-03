@@ -1,5 +1,9 @@
 package com.btncafe.cordova.sktgeofence;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +13,7 @@ import org.json.JSONObject;
 
 import UPPERCASE.JAVA.JSON.UTIL;
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.skt.geofence.AppData;
 import com.skt.geofence.GeoFenceSyncState;
@@ -81,7 +86,9 @@ public class SKTGeofence {
 			// Web-Poc와 단말간의 데이터 동기화
 			agentManager.syncWDB(appData);
 
-			connectedListener.onConnected();
+			if (connectedListener != null) {
+				connectedListener.onConnected();
+			}
 		}
 	};
 
@@ -106,6 +113,16 @@ public class SKTGeofence {
 		} catch (GeoFenceAgentException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * SKT GeoFenceAgent와 연결합니다.
+	 * 
+	 * @param activity
+	 * @param tdcProjectKey
+	 */
+	public SKTGeofence(Context context, String tdcProjectKey) {
+		this(context, tdcProjectKey, null);
 	}
 
 	private Handler emptyHandler = new Handler() {
@@ -217,6 +234,52 @@ public class SKTGeofence {
 		agentManager.getWStoreGroupAll();
 	}
 
+	public class CreateStoreTask extends AsyncTask<Void, Void, Void> {
+
+		private JSONObject data;
+
+		public CreateStoreTask(JSONObject data) {
+			this.data = data;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+
+			JSONObject copy = UTIL.COPY_DATA(data);
+
+			try {
+
+				BufferedInputStream in = null;
+				StringBuffer sb = new StringBuffer();
+
+				URL url = new URL("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + data.getDouble("latitude") + "," + data.getDouble("longitude"));
+
+				URLConnection urlConnection = url.openConnection();
+				urlConnection.setRequestProperty("Accept-Language", "ko");
+
+				in = new BufferedInputStream(urlConnection.getInputStream());
+
+				byte[] bufRead = new byte[4096];
+				int lenRead = 0;
+				while ((lenRead = in.read(bufRead)) > 0) {
+					sb.append(new String(bufRead, 0, lenRead));
+				}
+
+				copy.put("address", new JSONObject(sb.toString()).getJSONArray("results").getJSONObject(0).getString("formatted_address"));
+				copy.put("floor", 1);
+
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			agentManager.setWStore(copy.toString());
+
+			return null;
+		}
+	}
+
 	/**
 	 * Store를 생성합니다.
 	 * 
@@ -225,16 +288,10 @@ public class SKTGeofence {
 	 */
 	public void createStore(JSONObject data, Handler handler) {
 
-		JSONObject copy = UTIL.COPY_DATA(data);
-
-		try {
-			copy.put("floor", 1);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
 		handlers.add(handler);
-		agentManager.setWStore(copy.toString());
+
+		CreateStoreTask createStoreTask = new CreateStoreTask(data);
+		createStoreTask.execute();
 	}
 
 	/**

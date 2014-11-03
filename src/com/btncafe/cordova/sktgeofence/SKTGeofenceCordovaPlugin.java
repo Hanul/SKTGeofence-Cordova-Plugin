@@ -2,7 +2,6 @@ package com.btncafe.cordova.sktgeofence;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,9 +24,7 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 
 				@Override
 				public void handle(JSONObject data) {
-					PluginResult result = new PluginResult(PluginResult.Status.OK, data);
-					result.setKeepCallback(true);
-					callbackContext.sendPluginResult(result);
+					callbackContext.success(data);
 				}
 			});
 		}
@@ -38,13 +35,15 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 
 				@Override
 				public void handle(JSONObject data) {
-					PluginResult result = new PluginResult(PluginResult.Status.OK, data);
-					result.setKeepCallback(true);
-					callbackContext.sendPluginResult(result);
+					callbackContext.success(data);
 				}
 			});
+
+		} else {
+			// Returning false results in a "MethodNotFound" error.
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 }

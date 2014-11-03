@@ -74,9 +74,7 @@ public class SKTGeofence {
 
 		@Override
 		public void onSynchronizeStatusChanged(GeoFenceSyncState state, boolean arg1) {
-			if (connectedListener != null && state.type == GeoFenceSyncState.syncFinished) {
-				connectedListener.onConnected();
-			}
+			// ignore.
 		}
 
 		@Override
@@ -87,6 +85,10 @@ public class SKTGeofence {
 
 			// Web-Poc와 단말간의 데이터 동기화
 			agentManager.syncWDB(appData);
+
+			if (connectedListener != null) {
+				connectedListener.onConnected();
+			}
 		}
 	};
 

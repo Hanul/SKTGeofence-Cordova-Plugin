@@ -14,7 +14,9 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 	public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
 
 		if (action.equals("init")) {
+
 			JSONObject params = args.getJSONObject(0);
+
 			sktgeofence = new SKTGeofence(this.cordova.getActivity(), params.getString("packageName"), params.getString("tdcProjectKey"), new ConnectedListener() {
 
 				@Override
@@ -41,7 +43,7 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 
 				@Override
 				public void handle(JSONObject data) {
-					callbackContext.success(data);
+					callbackContext.success();
 				}
 			});
 		}
@@ -64,7 +66,7 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 
 				@Override
 				public void handle(JSONObject data) {
-					callbackContext.success(data);
+					callbackContext.success();
 				}
 			});
 		}

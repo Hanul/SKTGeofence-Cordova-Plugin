@@ -26,9 +26,31 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 			});
 		}
 
+		else if (action.equals("setCheckInHandler")) {
+
+			SKTGeofence.setCheckInHandler(new CheckInHandler() {
+
+				@Override
+				public void handle(int storeId) {
+					callbackContext.success(storeId);
+				}
+			});
+		}
+
 		else if (action.equals("createStoreGroup")) {
 
 			sktgeofence.createStoreGroup(args.getJSONObject(0), new Handler() {
+
+				@Override
+				public void handle(JSONObject data) {
+					callbackContext.success(data);
+				}
+			});
+		}
+
+		else if (action.equals("updateStoreGroup")) {
+
+			sktgeofence.updateStoreGroup(args.getJSONObject(0), new Handler() {
 
 				@Override
 				public void handle(JSONObject data) {
@@ -51,6 +73,18 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 		else if (action.equals("createStore")) {
 
 			sktgeofence.createStore(args.getJSONObject(0), new Handler() {
+
+				@Override
+				public void handle(JSONObject data) {
+					callbackContext.success(data);
+				}
+			});
+
+		}
+
+		else if (action.equals("updateStore")) {
+
+			sktgeofence.updateStore(args.getJSONObject(0), new Handler() {
 
 				@Override
 				public void handle(JSONObject data) {

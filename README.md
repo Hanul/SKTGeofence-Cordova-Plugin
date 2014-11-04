@@ -8,14 +8,25 @@ cordova plugin add https://github.com/Hanul/SKTGeofence-Cordova-Plugin.git
 ```
 
 ## API
+* `SKTGeofence.init`
+* `SKTGeofence.setCheckInHandler`
+
 해당 플러그인은 Store Group, Store 두 가지 데이터 처리를 제공합니다.
 #### Store Group
+* `SKTGeofence.createStoreGroup`
+* `SKTGeofence.updateStoreGroup`
+* `SKTGeofence.removeStoreGroup`
+
 ###### Data
 | Name      | Type   | Description |
 |-----------|--------|-------------|
 | groupName | String | 매장 그룹명   |
 
 #### Store
+* `SKTGeofence.createStore`
+* `SKTGeofence.updateStore`
+* `SKTGeofence.removeStore`
+
 ###### Data
 | Name         | Type    | Description  |
 |--------------|---------|--------------|

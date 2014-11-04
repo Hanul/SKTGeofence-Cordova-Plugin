@@ -385,103 +385,6 @@ public class SKTGeofence {
 	}
 
 	/**
-	 * Fence를 생성합니다.
-	 * 
-	 * @param data
-	 * @param handler
-	 */
-	public void createFence(JSONObject data, Handler handler) {
-		handlers.add(handler);
-		agentManager.setWFence(data.toString());
-	}
-
-	/**
-	 * Fence를 생성합니다.
-	 * 
-	 * @param data
-	 */
-	public void createFence(JSONObject data) {
-		createFence(data, emptyHandler);
-	}
-
-	/**
-	 * fenceId에 해당하는 Fence 정보를 가져옵니다.
-	 * 
-	 * @param fenceId
-	 * @param handler
-	 */
-	public void getFence(int fenceId, Handler handler) {
-		handlers.add(handler);
-		agentManager.getWFence(String.valueOf(fenceId));
-	}
-
-	/**
-	 * fenceId에 해당하는 Fence 정보를 수정합니다.
-	 * 
-	 * @param data
-	 * @param handler
-	 */
-	public void updateFence(final JSONObject data, final Handler handler) {
-
-		try {
-			getStore(data.getInt("fenceId"), new Handler() {
-
-				@Override
-				public void handle(JSONObject originData) {
-
-					UTIL.EXTEND_DATA(originData, data);
-
-					handlers.add(handler);
-					agentManager.updateWFence(originData.toString());
-				}
-			});
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * fenceId에 해당하는 Fence 정보를 수정합니다.
-	 * 
-	 * @param data
-	 */
-	public void updateFence(JSONObject data) {
-		updateFence(data, emptyHandler);
-	}
-
-	/**
-	 * fenceId에 해당하는 Fence 정보를 삭제합니다.
-	 * 
-	 * @param fenceId
-	 * @param handler
-	 */
-	public void removeFence(int fenceId, Handler handler) {
-		handlers.add(handler);
-		agentManager.deleteWFence(String.valueOf(fenceId));
-	}
-
-	/**
-	 * fenceId에 해당하는 Fence 정보를 삭제합니다.
-	 * 
-	 * @param fenceId
-	 */
-	public void removeFence(int fenceId) {
-		removeFence(fenceId, emptyHandler);
-	}
-
-	/**
-	 * storeId에 해당하는 Store의 모든 Fence 정보를 불러옵니다.
-	 * 
-	 * @param storeId
-	 * @param listHandler
-	 */
-	public void getFenceList(int storeId, ListHandler listHandler) {
-		listHandlers.add(listHandler);
-		agentManager.getWFenceAll(String.valueOf(storeId));
-	}
-
-	/**
 	 * OnDestroy등에서 GeoFenceAgent와 연결을 해제합니다.
 	 */
 	public void release() {
@@ -490,5 +393,15 @@ public class SKTGeofence {
 		} catch (GeoFenceAgentException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static CheckInHandler checkInHandler;
+
+	public static CheckInHandler getCheckInHandler() {
+		return checkInHandler;
+	}
+
+	public static void setCheckInHandler(CheckInHandler checkInHandler) {
+		SKTGeofence.checkInHandler = checkInHandler;
 	}
 }

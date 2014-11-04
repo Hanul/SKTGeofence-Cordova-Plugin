@@ -3,7 +3,7 @@
 xmlns="http://www.phonegap.com/ns/plugins/1.0"
 xmlns:android="http://schemas.android.com/apk/res/android"
 id="com.btncafe.cordova.sktgeofence"
-version="0.0.1">
+version="0.0.2">
 	<name>SKTGeofence Cordova Plugin</name>
 	<author>Hanul</author>
 	<license>MIT</license>
@@ -23,7 +23,7 @@ version="0.0.1">
 		</config-file>
 		<config-file target="AndroidManifest.xml" parent="/manifest/application">
 			<receiver
-			android:name="com.btncafe.cordova.sktgeofence.GeoServiceReceiver"
+			android:name="com.btncafe.cordova.sktgeofence.SKTGeofenceServiceReceiver"
 			android:enabled="true"
 			android:exported="true" >
 				<intent-filter>
@@ -39,5 +39,7 @@ version="0.0.1">
 		<source-file src="src/com/btncafe/cordova/sktgeofence/Handler.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
 		<source-file src="src/com/btncafe/cordova/sktgeofence/ListHandler.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
 		<source-file src="src/com/btncafe/cordova/sktgeofence/SKTGeofenceCordovaPlugin.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
+		<source-file src="src/com/btncafe/cordova/sktgeofence/CheckInHandler.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
+		<source-file src="src/com/btncafe/cordova/sktgeofence/SKTGeofenceServiceReceiver.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
 	</platform>
 </plugin>

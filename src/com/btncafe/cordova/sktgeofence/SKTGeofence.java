@@ -23,8 +23,9 @@ import com.skt.geofence.agent.service.GeoFenceAgentListener;
 
 public class SKTGeofence {
 
+	private static AppData appData;
+
 	private AgentManager agentManager;
-	private AppData appData;
 	private ConnectedListener connectedListener;
 
 	private List<Handler> handlers = new ArrayList<Handler>();
@@ -403,5 +404,9 @@ public class SKTGeofence {
 
 	public static void setCheckInHandler(CheckInHandler checkInHandler) {
 		SKTGeofence.checkInHandler = checkInHandler;
+	}
+
+	public static AppData getAppData() {
+		return appData;
 	}
 }

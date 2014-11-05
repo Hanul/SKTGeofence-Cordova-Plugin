@@ -11,7 +11,7 @@ public class SKTGeofenceServiceReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
-		if (intent.getAction().equals("com.btncafe.cordova.sktgeofence.GEOEVENT")) {
+		if (intent.getAction().equals(SKTGeofence.getAppData().packageName + ".GEOEVENT")) {
 
 			int storeId = intent.getIntExtra(GeoConstData.STORE_ID, 0);
 

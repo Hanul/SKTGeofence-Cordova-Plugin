@@ -21,16 +21,6 @@ version="0.0.2">
 		<config-file target="AndroidManifest.xml" parent="/manifest">
 			<uses-permission android:name="android.permission.INTERNET" />
 		</config-file>
-		<config-file target="AndroidManifest.xml" parent="/manifest/application">
-			<receiver
-			android:name="com.btncafe.cordova.sktgeofence.SKTGeofenceServiceReceiver"
-			android:enabled="true"
-			android:exported="true" >
-				<intent-filter>
-					<action android:name="com.btncafe.cordova.sktgeofence.GEOEVENT" />
-				</intent-filter>
-			</receiver>
-		</config-file>
 		<source-file src="libs/android-support-v4.jar" target-dir="libs" />
 		<source-file src="libs/GeoFenceApi.jar" target-dir="libs" />
 		<source-file src="libs/UPPERCASE.JAVA-JSON-UTIL.jar" target-dir="libs" />

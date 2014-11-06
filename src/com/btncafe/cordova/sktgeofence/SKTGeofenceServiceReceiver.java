@@ -12,6 +12,8 @@ public class SKTGeofenceServiceReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
+		Log.i("SKTGeofenceServiceReceiver", "ACTION:" + intent.getAction());
+
 		if (intent.getAction().equals(SKTGeofence.getAppData().packageName + ".GEOEVENT")) {
 
 			int storeId = intent.getIntExtra(GeoConstData.STORE_ID, 0);

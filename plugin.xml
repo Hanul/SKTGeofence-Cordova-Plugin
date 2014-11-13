@@ -26,6 +26,7 @@ version="0.0.3">
 		<source-file src="libs/UPPERCASE.JAVA-JSON-UTIL.jar" target-dir="libs" />
 		<source-file src="src/com/btncafe/cordova/sktgeofence/SKTGeofence.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
 		<source-file src="src/com/btncafe/cordova/sktgeofence/ConnectedListener.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
+		<source-file src="src/com/btncafe/cordova/sktgeofence/IdHandler.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
 		<source-file src="src/com/btncafe/cordova/sktgeofence/Handler.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
 		<source-file src="src/com/btncafe/cordova/sktgeofence/ListHandler.java" target-dir="src/com/btncafe/cordova/sktgeofence" />
 		<source-file src="src/com/btncafe/cordova/sktgeofence/SKTGeofenceCordovaPlugin.java" target-dir="src/com/btncafe/cordova/sktgeofence" />

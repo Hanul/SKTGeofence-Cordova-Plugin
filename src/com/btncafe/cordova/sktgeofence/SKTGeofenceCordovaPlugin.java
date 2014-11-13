@@ -39,11 +39,11 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 
 		else if (action.equals("createStoreGroup")) {
 
-			sktgeofence.createStoreGroup(args.getJSONObject(0), new Handler() {
+			sktgeofence.createStoreGroup(args.getJSONObject(0), new IdHandler() {
 
 				@Override
-				public void handle(JSONObject data) {
-					callbackContext.success(data);
+				public void handle(int id) {
+					callbackContext.success(id);
 				}
 			});
 		}
@@ -72,11 +72,11 @@ public class SKTGeofenceCordovaPlugin extends CordovaPlugin {
 
 		else if (action.equals("createStore")) {
 
-			sktgeofence.createStore(args.getJSONObject(0), new Handler() {
+			sktgeofence.createStore(args.getJSONObject(0), new IdHandler() {
 
 				@Override
-				public void handle(JSONObject data) {
-					callbackContext.success(data);
+				public void handle(int id) {
+					callbackContext.success(id);
 				}
 			});
 

@@ -28,6 +28,7 @@ public class SKTGeofence {
 	private AgentManager agentManager;
 	private ConnectedListener connectedListener;
 
+	private List<IdHandler> idHandlers = new ArrayList<IdHandler>();
 	private List<Handler> handlers = new ArrayList<Handler>();
 	private List<ListHandler> listHandlers = new ArrayList<ListHandler>();
 
@@ -45,7 +46,7 @@ public class SKTGeofence {
 				JSONObject result = new JSONObject(json);
 				String dataType = result.getString("data_type");
 
-				if (dataType.equals("StoreGroupList") || dataType.equals("StoreList") || dataType.equals("EventList") || dataType.equals("FenceList")) {
+				if (dataType.equals("StoreGroupList") || dataType.equals("StoreList") || dataType.equals("EventGroupList") || dataType.equals("EventList")) {
 
 					List<JSONObject> dataSet = new ArrayList<JSONObject>();
 
@@ -58,7 +59,14 @@ public class SKTGeofence {
 					listHandlers.remove(0).handle(dataSet);
 
 				} else if (!result.isNull("data")) {
-					handlers.remove(0).handle(result.getJSONObject("data"));
+
+					Object data = result.get("data");
+
+					if (data instanceof Integer) {
+						idHandlers.remove(0).handle(result.getInt("data"));
+					} else {
+						handlers.remove(0).handle(result.getJSONObject("data"));
+					}
 				} else {
 					handlers.remove(0).handle(null);
 				}
@@ -109,6 +117,7 @@ public class SKTGeofence {
 		this.connectedListener = connectedListener;
 
 		agentManager = AgentManager.getInstance();
+
 		try {
 			agentManager.initialize(context, agentListener);
 		} catch (GeoFenceAgentException e) {
@@ -126,6 +135,14 @@ public class SKTGeofence {
 		this(context, packageName, tdcProjectKey, null);
 	}
 
+	private IdHandler emptyIdHandler = new IdHandler() {
+
+		@Override
+		public void handle(int id) {
+			// ignore.
+		}
+	};
+
 	private Handler emptyHandler = new Handler() {
 
 		@Override
@@ -138,20 +155,40 @@ public class SKTGeofence {
 	 * Store Group을 생성합니다.
 	 * 
 	 * @param data
-	 * @param handler
+	 * @param idHandler
 	 */
-	public void createStoreGroup(JSONObject data, Handler handler) {
+	public void createStoreGroup(JSONObject data, IdHandler idHandler) {
 
 		JSONObject copy = UTIL.COPY_DATA(data);
 
 		try {
-			copy.put("groupIcon", 0);
+			if (copy.isNull("groupIcon")) {
+				copy.put("groupIcon", "Fastfood");
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 
-		handlers.add(handler);
+		idHandlers.add(idHandler);
 		agentManager.setWStoreGroup(copy.toString());
+	}
+
+	/**
+	 * Store Group을 생성하고, 정보를 가져옵니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void createStoreGroup(JSONObject data, final Handler handler) {
+
+		createStoreGroup(data, new IdHandler() {
+
+			@Override
+			public void handle(int id) {
+
+				getStoreGroup(id, handler);
+			}
+		});
 	}
 
 	/**
@@ -160,7 +197,7 @@ public class SKTGeofence {
 	 * @param data
 	 */
 	public void createStoreGroup(JSONObject data) {
-		createStoreGroup(data, emptyHandler);
+		createStoreGroup(data, emptyIdHandler);
 	}
 
 	/**
@@ -183,14 +220,24 @@ public class SKTGeofence {
 	public void updateStoreGroup(final JSONObject data, final Handler handler) {
 
 		try {
-			getStoreGroup(data.getInt("storeGroupId"), new Handler() {
+
+			final int storeGroupId = data.getInt("storeGroupId");
+
+			getStoreGroup(storeGroupId, new Handler() {
 
 				@Override
 				public void handle(JSONObject originData) {
 
 					UTIL.EXTEND_DATA(originData, data);
 
-					handlers.add(handler);
+					handlers.add(new Handler() {
+
+						@Override
+						public void handle(JSONObject data) {
+							getStoreGroup(storeGroupId, handler);
+						}
+					});
+
 					agentManager.updateWStoreGroup(originData.toString());
 				}
 			});
@@ -289,14 +336,34 @@ public class SKTGeofence {
 	 * Store를 생성합니다.
 	 * 
 	 * @param data
-	 * @param handler
+	 * @param idHandler
 	 */
-	public void createStore(JSONObject data, Handler handler) {
+	public void createStore(JSONObject data, IdHandler idHandler) {
 
-		handlers.add(handler);
+		idHandlers.add(idHandler);
+
+		agentManager.setWStore(data.toString());
 
 		CreateStoreTask createStoreTask = new CreateStoreTask(data);
 		createStoreTask.execute();
+	}
+
+	/**
+	 * Store를 생성하고, 정보를 가져옵니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void createStore(JSONObject data, final Handler handler) {
+
+		createStore(data, new IdHandler() {
+
+			@Override
+			public void handle(int id) {
+
+				getStore(id, handler);
+			}
+		});
 	}
 
 	/**
@@ -305,7 +372,7 @@ public class SKTGeofence {
 	 * @param data
 	 */
 	public void createStore(JSONObject data) {
-		createStore(data, emptyHandler);
+		createStore(data, emptyIdHandler);
 	}
 
 	/**
@@ -328,14 +395,24 @@ public class SKTGeofence {
 	public void updateStore(final JSONObject data, final Handler handler) {
 
 		try {
-			getStore(data.getInt("storeId"), new Handler() {
+
+			final int storeId = data.getInt("storeId");
+
+			getStore(storeId, new Handler() {
 
 				@Override
 				public void handle(JSONObject originData) {
 
 					UTIL.EXTEND_DATA(originData, data);
 
-					handlers.add(handler);
+					handlers.add(new Handler() {
+
+						@Override
+						public void handle(JSONObject data) {
+							getStore(storeId, handler);
+						}
+					});
+
 					agentManager.updateWStore(originData.toString());
 				}
 			});
@@ -383,6 +460,141 @@ public class SKTGeofence {
 	public void getStoreList(int storeGroupId, ListHandler listHandler) {
 		listHandlers.add(listHandler);
 		agentManager.getWStoreAll(String.valueOf(storeGroupId));
+	}
+
+	/**
+	 * Event Group을 생성합니다.
+	 * 
+	 * @param data
+	 * @param idHandler
+	 */
+	public void createEventGroup(JSONObject data, IdHandler idHandler) {
+
+		JSONObject copy = UTIL.COPY_DATA(data);
+
+		try {
+			if (copy.isNull("groupIcon")) {
+				copy.put("groupIcon", "Winter");
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		idHandlers.add(idHandler);
+		agentManager.setWEventGroup(copy.toString());
+	}
+
+	/**
+	 * Event Group을 생성하고, 정보를 가져옵니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void createEventGroup(JSONObject data, final Handler handler) {
+
+		createEventGroup(data, new IdHandler() {
+
+			@Override
+			public void handle(int id) {
+
+				getEventGroup(id, handler);
+			}
+		});
+	}
+
+	/**
+	 * Event Group을 생성합니다.
+	 * 
+	 * @param data
+	 */
+	public void createEventGroup(JSONObject data) {
+		createEventGroup(data, emptyIdHandler);
+	}
+
+	/**
+	 * eventGroupId에 해당하는 Event Group 정보를 가져옵니다.
+	 * 
+	 * @param eventGroupId
+	 * @param handler
+	 */
+	public void getEventGroup(int eventGroupId, Handler handler) {
+		handlers.add(handler);
+		agentManager.getWEventGroup(String.valueOf(eventGroupId));
+	}
+
+	/**
+	 * eventGroupId에 해당하는 Event Group 정보를 수정합니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void updateEventGroup(final JSONObject data, final Handler handler) {
+
+		try {
+
+			final int eventGroupId = data.getInt("eventGroupId");
+
+			getEventGroup(eventGroupId, new Handler() {
+
+				@Override
+				public void handle(JSONObject originData) {
+
+					UTIL.EXTEND_DATA(originData, data);
+
+					handlers.add(new Handler() {
+
+						@Override
+						public void handle(JSONObject data) {
+							getEventGroup(eventGroupId, handler);
+						}
+					});
+
+					agentManager.updateWEventGroup(originData.toString());
+				}
+			});
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * eventGroupId에 해당하는 Event Group 정보를 수정합니다.
+	 * 
+	 * @param data
+	 */
+	public void updateEventGroup(JSONObject data) {
+		updateEventGroup(data, emptyHandler);
+	}
+
+	/**
+	 * eventGroupId에 해당하는 Event Group 정보를 삭제합니다.
+	 * 
+	 * @param eventGroupId
+	 * @param handler
+	 */
+	public void removeEventGroup(int eventGroupId, Handler handler) {
+		handlers.add(handler);
+		agentManager.deleteWEventGroup(String.valueOf(eventGroupId));
+	}
+
+	/**
+	 * eventGroupId에 해당하는 Event Group 정보를 삭제합니다.
+	 * 
+	 * @param eventGroupId
+	 */
+	public void removeEventGroup(int eventGroupId) {
+		removeEventGroup(eventGroupId, emptyHandler);
+	}
+
+	/**
+	 * 모든 Event Group 정보를 불러옵니다.
+	 * 
+	 * @param listHandler
+	 */
+	public void getEventGroupList(ListHandler listHandler) {
+		listHandlers.add(listHandler);
+		agentManager.getWEventGroupAll();
 	}
 
 	/**

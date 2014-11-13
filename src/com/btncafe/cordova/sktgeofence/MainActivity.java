@@ -48,23 +48,20 @@ public class MainActivity extends Activity {
 				@Override
 				public void onConnected() {
 
-					JSONObject data1 = new JSONObject();
-
-					try {
-						data1.put("groupName", "할인사냥테스트1");
-
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-					sktgeofence.createStoreGroup(data1, new Handler() {
-
-						@Override
-						public void handle(JSONObject data) {
-							Log.i("test", data.toString());
-						}
-					});
+					/*
+					 * JSONObject data1 = new JSONObject();
+					 * 
+					 * try { data1.put("groupName", "할인사냥테스트21qweq323");
+					 * data1.put("groupDesc", "할인사냥테스트21wqwe323");
+					 * 
+					 * } catch (JSONException e) { // TODO Auto-generated catch
+					 * block e.printStackTrace(); }
+					 * 
+					 * sktgeofence.createStoreGroup(data1, new Handler() {
+					 * 
+					 * @Override public void handle(JSONObject data) {
+					 * Log.i("test", data.toString()); } });
+					 */
 
 					// 사용할 버튼을 선언해준다.
 					Button button1;
@@ -79,133 +76,150 @@ public class MainActivity extends Activity {
 						// button이다.
 						public void onClick(View v) {
 
-							sktgeofence.removeStoreGroup(348, new Handler() {
+							/*
+							 * sktgeofence.removeStoreGroup(348, new Handler() {
+							 * 
+							 * @Override public void handle(JSONObject data) {
+							 * Log.i("test", "TEST"); } });
+							 */
+						}
+					});
+
+					Log.i("test1", "test!!");
+
+					sktgeofence.getStoreGroupList(new ListHandler() {
+
+						@Override
+						public void handle(List<JSONObject> dataSet) {
+							// Log.i("test1", dataSet.toString());
+
+							for (JSONObject data : dataSet) {
+								/*
+								 * sktgeofence.removeStoreGroup(data.getInt(
+								 * "storeGroupId"), new Handler() {
+								 * 
+								 * @Override public void handle() {
+								 * Log.i("test", "deleted!"); } });
+								 */
+							}
+
+							sktgeofence.getStoreList(845, new ListHandler() {
 
 								@Override
-								public void handle(JSONObject data) {
-									Log.i("test", "TEST");
+								public void handle(List<JSONObject> dataSet) {
+									// Log.i("test2", dataSet.toString());
+
+									sktgeofence.getStore(332, new Handler() {
+
+										@Override
+										public void handle(JSONObject dataSet) {
+											// Log.i("test3",
+											// dataSet.toString());
+										}
+									});
 								}
 							});
 						}
 					});
 
-					if (false) {
+					// 사용할 버튼을 선언해준다.
+					Button button;
 
-						sktgeofence.getStoreGroupList(new ListHandler() {
+					// Java의 button 객체를 main.xml의 버튼(id가 main_button)과
+					// 연결해준다.
+					button = (Button) findViewById(R.id.main_button);
 
-							@Override
-							public void handle(List<JSONObject> dataSet) {
-								Log.i("test1", dataSet.toString());
+					// 버튼의 클릭이벤트를 처리하기 위해 클릭리스너를 버튼에 등록해준다.
+					button.setOnClickListener(new OnClickListener() {
+						// 파라미터로 넘어오는 View는 현재 클릭된 View이다. 현재 클릭된 View는
+						// button이다.
+						public void onClick(View v) {
 
-								for (JSONObject data : dataSet) {
-									/*
-									 * sktgeofence.removeStoreGroup(data.getInt(
-									 * "storeGroupId"), new Handler() {
-									 * 
-									 * @Override public void handle() {
-									 * Log.i("test", "deleted!"); } });
-									 */
-								}
+							/*
+							 * JSONObject data1 = new JSONObject();
+							 * 
+							 * try { data1.put("groupName", "할인사냥테스트1");
+							 * 
+							 * } catch (JSONException e) { // TODO
+							 * Auto-generated catch block e.printStackTrace(); }
+							 * 
+							 * sktgeofence.createStoreGroup(data1, new
+							 * IdHandler() {
+							 * 
+							 * @Override public void handle(int id) {
+							 * Log.i("test", String.valueOf(id)); } });
+							 */
 
-								sktgeofence.getStoreList(328, new ListHandler() {
+							/*JSONObject data = new JSONObject();
 
-									@Override
-									public void handle(List<JSONObject> dataSet) {
-										// Log.i("test2", dataSet.toString());
+							try {
+								data.put("storeGroupId", 845);
+								data.put("name", "홈213122231234");
+								data.put("latitude", 37.56131351196535);
+								data.put("longitude", 126.996517880426);
 
-										sktgeofence.getStore(332, new Handler() {
-
-											@Override
-											public void handle(JSONObject dataSet) {
-												// Log.i("test3",
-												// dataSet.toString());
-											}
-										});
-									}
-								});
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-						});
 
-						// 사용할 버튼을 선언해준다.
-						Button button;
+							sktgeofence.createStore(data, new IdHandler() {
 
-						// Java의 button 객체를 main.xml의 버튼(id가 main_button)과
-						// 연결해준다.
-						button = (Button) findViewById(R.id.main_button);
+								@Override
+								public void handle(int id) {
 
-						// 버튼의 클릭이벤트를 처리하기 위해 클릭리스너를 버튼에 등록해준다.
-						button.setOnClickListener(new OnClickListener() {
-							// 파라미터로 넘어오는 View는 현재 클릭된 View이다. 현재 클릭된 View는
-							// button이다.
-							public void onClick(View v) {
+									JSONObject ndata = new JSONObject();
 
-								JSONObject data1 = new JSONObject();
+									try {
+										ndata.put("storeId", id);
+										ndata.put("name", "집4123221232");
 
-								try {
-									data1.put("groupName", "할인사냥테스트1");
-
-								} catch (JSONException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-
-								sktgeofence.createStoreGroup(data1, new Handler() {
-
-									@Override
-									public void handle(JSONObject data) {
-										Log.i("test", data.toString());
+									} catch (JSONException e) {
+										// TODO Auto-generated catch
+										// block
+										e.printStackTrace();
 									}
-								});
+									
+									Log.i("testup", ndata.toString());
 
-								JSONObject data = new JSONObject();
-
-								try {
-									data.put("storeGroupId", 328);
-									data.put("name", "홈4");
-									data.put("latitude", 37.56131351196535);
-									data.put("longitude", 126.996517880426);
-
-								} catch (JSONException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-
-								if (false) {
-
-									sktgeofence.createStore(data, new Handler() {
+									sktgeofence.updateStore(ndata, new Handler() {
 
 										@Override
 										public void handle(JSONObject data) {
-
-											JSONObject ndata = new JSONObject();
-
-											try {
-												ndata.put("storeId", data.getInt("storeId"));
-												ndata.put("name", "집4");
-
-											} catch (JSONException e) {
-												// TODO Auto-generated catch
-												// block
-												e.printStackTrace();
-											}
-
-											sktgeofence.updateStore(ndata, new Handler() {
-
-												@Override
-												public void handle(JSONObject data) {
-													Log.i("testup", data.toString());
-												}
-											});
+											Log.i("testup", data.toString());
 										}
 									});
 								}
+							});*/
+							
+							JSONObject data = new JSONObject();
 
-								// mAgentManager.setWStore(data.toString());
+							try {
+								data.put("groupName", "이벤트");
+								data.put("groupDesc", "이벤트");
+								data.put("startDate", "2014-11-01");
+								data.put("endDate",  "2014-11-31");
+								data.put("eventCount",  0);
+								data.put("eventList",  null);
 
-								// mAgentManager.getWFenceAll("API_Test_for_BTNCafe");
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-						});
-					}
+							
+							sktgeofence.createEventGroup(data, new Handler() {
+
+								@Override
+								public void handle(JSONObject data) {
+									Log.i("testup", data.toString());
+								}
+							});
+
+							// mAgentManager.setWStore(data.toString());
+
+							// mAgentManager.getWFenceAll("API_Test_for_BTNCafe");
+						}
+					});
 				}
 			});
 

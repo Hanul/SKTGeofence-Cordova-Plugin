@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -150,68 +151,107 @@ public class MainActivity extends Activity {
 							 * Log.i("test", String.valueOf(id)); } });
 							 */
 
-							/*JSONObject data = new JSONObject();
+							/*
+							 * JSONObject data = new JSONObject();
+							 * 
+							 * try { data.put("storeGroupId", 845);
+							 * data.put("name", "홈213122231234");
+							 * data.put("latitude", 37.56131351196535);
+							 * data.put("longitude", 126.996517880426);
+							 * 
+							 * } catch (JSONException e) { // TODO
+							 * Auto-generated catch block e.printStackTrace(); }
+							 * 
+							 * sktgeofence.createStore(data, new IdHandler() {
+							 * 
+							 * @Override public void handle(int id) {
+							 * 
+							 * JSONObject ndata = new JSONObject();
+							 * 
+							 * try { ndata.put("storeId", id); ndata.put("name",
+							 * "집4123221232");
+							 * 
+							 * } catch (JSONException e) { // TODO
+							 * Auto-generated catch // block
+							 * e.printStackTrace(); }
+							 * 
+							 * Log.i("testup", ndata.toString());
+							 * 
+							 * sktgeofence.updateStore(ndata, new Handler() {
+							 * 
+							 * @Override public void handle(JSONObject data) {
+							 * Log.i("testup", data.toString()); } }); } });
+							 */
 
-							try {
-								data.put("storeGroupId", 845);
-								data.put("name", "홈213122231234");
-								data.put("latitude", 37.56131351196535);
-								data.put("longitude", 126.996517880426);
-
-							} catch (JSONException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-
-							sktgeofence.createStore(data, new IdHandler() {
-
-								@Override
-								public void handle(int id) {
-
-									JSONObject ndata = new JSONObject();
-
-									try {
-										ndata.put("storeId", id);
-										ndata.put("name", "집4123221232");
-
-									} catch (JSONException e) {
-										// TODO Auto-generated catch
-										// block
-										e.printStackTrace();
-									}
-									
-									Log.i("testup", ndata.toString());
-
-									sktgeofence.updateStore(ndata, new Handler() {
-
-										@Override
-										public void handle(JSONObject data) {
-											Log.i("testup", data.toString());
-										}
-									});
-								}
-							});*/
-							
 							JSONObject data = new JSONObject();
 
 							try {
 								data.put("groupName", "이벤트");
 								data.put("groupDesc", "이벤트");
-								data.put("startDate", "2014-11-01");
-								data.put("endDate",  "2014-11-31");
-								data.put("eventCount",  0);
-								data.put("eventList",  null);
+								data.put("startDate", "2014-11-17");
+								data.put("endDate", "2014-11-31");
+								data.put("eventCount", 0);
+								data.put("eventList", null);
 
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							
+
 							sktgeofence.createEventGroup(data, new Handler() {
 
 								@Override
 								public void handle(JSONObject data) {
 									Log.i("testup", data.toString());
+
+									JSONObject data1 = new JSONObject();
+
+									try {
+										data1.put("eventGroupId", data.getInt("eventGroupId"));
+										data1.put("eventName", "이이 베베 트트");
+										data1.put("eventCheckType", "Stay");
+										//data1.put("eventStayMinute", 60);
+										
+										JSONObject et = new JSONObject();
+										et.put("startTime", "00");
+										et.put("endTime", "20");
+										
+										JSONArray a = new JSONArray();
+										a.put(et);
+
+										//data1.put("eventTimeList", a);
+
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+
+									sktgeofence.createEvent(data1, new Handler() {
+
+										@Override
+										public void handle(JSONObject ddd) {
+
+											JSONObject ndata = new JSONObject();
+
+											try {
+												ndata.put("eventId", ddd.getString("eventId"));
+												ndata.put("eventName", "zzz");
+
+											} catch (JSONException e) {
+												// TODO Auto-generated catch
+												// block
+												e.printStackTrace();
+											}
+
+											sktgeofence.updateStore(ndata, new Handler() {
+
+												@Override
+												public void handle(JSONObject data) {
+													Log.i("testup", data.toString());
+												}
+											});
+										}
+									});
 								}
 							});
 

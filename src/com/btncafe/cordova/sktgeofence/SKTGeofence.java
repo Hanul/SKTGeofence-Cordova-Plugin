@@ -598,6 +598,148 @@ public class SKTGeofence {
 	}
 
 	/**
+	 * Event를 생성합니다.
+	 * 
+	 * @param data
+	 * @param idHandler
+	 */
+	public void createEvent(JSONObject data, IdHandler idHandler) {
+
+		JSONObject copy = UTIL.COPY_DATA(data);
+
+		try {
+			if (copy.isNull("eventIcon")) {
+				copy.put("eventIcon", "Winter");
+			}
+			if (copy.isNull("availableWeekDate")) {
+				copy.put("availableWeekDate", "MON, TUE, WED, THU, FRI, SAT, SUN");
+			}
+			if (copy.isNull("isAllTime")) {
+				copy.put("isAllTime", "Y");
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		idHandlers.add(idHandler);
+		agentManager.setWEvent(copy.toString());
+	}
+
+	/**
+	 * Event를 생성하고, 정보를 가져옵니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void createEvent(JSONObject data, final Handler handler) {
+
+		createEvent(data, new IdHandler() {
+
+			@Override
+			public void handle(int id) {
+
+				getEvent(id, handler);
+			}
+		});
+	}
+
+	/**
+	 * Event를 생성합니다.
+	 * 
+	 * @param data
+	 */
+	public void createEvent(JSONObject data) {
+		createEvent(data, emptyIdHandler);
+	}
+
+	/**
+	 * eventId에 해당하는 Event 정보를 가져옵니다.
+	 * 
+	 * @param eventId
+	 * @param handler
+	 */
+	public void getEvent(int eventId, Handler handler) {
+		handlers.add(handler);
+		agentManager.getWEvent(String.valueOf(eventId));
+	}
+
+	/**
+	 * eventId에 해당하는 Event 정보를 수정합니다.
+	 * 
+	 * @param data
+	 * @param handler
+	 */
+	public void updateEvent(final JSONObject data, final Handler handler) {
+
+		try {
+
+			final int eventId = data.getInt("eventId");
+
+			getEvent(eventId, new Handler() {
+
+				@Override
+				public void handle(JSONObject originData) {
+
+					UTIL.EXTEND_DATA(originData, data);
+
+					handlers.add(new Handler() {
+
+						@Override
+						public void handle(JSONObject data) {
+							getEvent(eventId, handler);
+						}
+					});
+
+					agentManager.updateWEvent(originData.toString());
+				}
+			});
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * eventId에 해당하는 Event 정보를 수정합니다.
+	 * 
+	 * @param data
+	 */
+	public void updateEvent(JSONObject data) {
+		updateEvent(data, emptyHandler);
+	}
+
+	/**
+	 * eventId에 해당하는 Event 정보를 삭제합니다.
+	 * 
+	 * @param eventId
+	 * @param handler
+	 */
+	public void removeEvent(int eventId, Handler handler) {
+		handlers.add(handler);
+		agentManager.deleteWEvent(String.valueOf(eventId));
+	}
+
+	/**
+	 * eventId에 해당하는 Event 정보를 삭제합니다.
+	 * 
+	 * @param eventId
+	 */
+	public void removeEvent(int eventId) {
+		removeEvent(eventId, emptyHandler);
+	}
+
+	/**
+	 * storeId에 해당하는 Event Group의 모든 Event 정보를 불러옵니다.
+	 * 
+	 * @param storeId
+	 * @param listHandler
+	 */
+	public void getEventList(int storeId, ListHandler listHandler) {
+		listHandlers.add(listHandler);
+		agentManager.getWStoreEventAll(String.valueOf(storeId));
+	}
+
+	/**
 	 * OnDestroy등에서 GeoFenceAgent와 연결을 해제합니다.
 	 */
 	public void release() {

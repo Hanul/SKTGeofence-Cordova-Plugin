@@ -59,8 +59,8 @@ cordova plugin add https://github.com/Hanul/SKTGeofence-Cordova-Plugin.git
 | Name      | Type   | Description |
 |-----------|--------|-------------|
 | groupName | String | 이벤트 그룹명   |
-| startDate | String | 이벤트 시작 일자   |
-| endDate   | String | 이벤트 종료 일자 |
+| startDate | String | 이벤트 시작 일자 (예: 2014-11-21)   |
+| endDate   | String | 이벤트 종료 일자 (예: 2014-11-30) |
 
 #### Event
 * `SKTGeofence.createEvent(data, handler)` 이벤트 정보를 생성하고, 정보를 가져옵니다.
@@ -72,9 +72,10 @@ cordova plugin add https://github.com/Hanul/SKTGeofence-Cordova-Plugin.git
 ###### Event Data 형태
 | Name           | Type    | Description  |
 |----------------|---------|--------------|
-| eventGroupId   | Integer | 매장 그룹 ID  |
-| eventName      | String  | 이벤트 명        |
+| eventGroupId   | Integer | 이벤트 그룹 ID  |
+| name           | String  | 이벤트 명        |
 | eventCheckType | String  | 이벤트 체크 방법 (CheckIn : 팬스 안으로 진입 시, CheckOut : 팬스 밖으로 나갈 때, Stay : 팬스 안에서 머무를 때) |
+| storeId        | Integer | 매장 ID        |
 
 ## License
 [MIT](LICENSE)

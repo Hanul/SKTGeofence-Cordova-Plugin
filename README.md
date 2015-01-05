@@ -6,7 +6,9 @@ SKT Geofence API를 Cordova에서 사용 가능하게 하는 플러그인 입니
 ```
 cordova plugin add https://github.com/Hanul/SKTGeofence-Cordova-Plugin.git
 ```
-2. `/platforms/android/AndroidManifest.xml`의 `application` 이하에 하단의 내용을 추가합니다. `{{YOUR PACKAGE NAME}}` 부분에는 현재 프로젝트의 패키지 명을 입력합니다.
+
+##### SKTGeofence-Android-Simple의 Receiver를 사용할 경우
+프로젝트의 `/platforms/android/AndroidManifest.xml`의 `application` 이하에 하단의 내용을 추가합니다. `{{YOUR PACKAGE NAME}}` 부분에는 현재 프로젝트의 패키지 명을 입력합니다.
 ```XML
 <receiver android:enabled="true" android:exported="true" android:name="com.btncafe.cordova.SKTGeofence.SKTGeofenceServiceReceiver">
 	<intent-filter>
@@ -14,6 +16,9 @@ cordova plugin add https://github.com/Hanul/SKTGeofence-Cordova-Plugin.git
     </intent-filter>
 </receiver>
 ```
+
+##### Receiver를 직접 구현할 경우
+SKTelecom의 공식 문서 및 `com.btncafe.cordova.sktgeofence.SKTGeofenceServiceReceiver`를 참고하여 Receiver를 직접 구현할 수 있습니다. 이 경우에는 [SKTelecom Geofence API 공식 문서](https://developers.sktelecom.com/content/tapi/Geo-fence/)를 따릅니다.
 
 ## API
 #### 초기화
